@@ -72,7 +72,7 @@ TJ_SYSTEMDPATH="${SYSTEMDPREFIX}/${TJ_NAME}.service"
 echo "刷新源..."
 apt update
 echo "安装软件pssh wget socat qrencode curl xz unzip build-essential redis-server..."
-apt install pssh wget socat qrencode curl xz-utils unzip build-essential redis-server -y
+apt install pssh wget socat qrencode curl xz-utils unzip build-essential redis-server openssl -y
 
 ymname="/etc/nginx/conf.d/${newname}.conf"
 wwip=$(curl -fsSL https://ipv4.jsonip.com | grep -o "[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}")
