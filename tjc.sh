@@ -23,11 +23,10 @@ fi
 
 echo "输入域名: "
 read newname
-echo "设置 trojan 密码 password: "
-read TJ_PASS
 echo "输入防火墙SSH要开放的端口: "
 read ssh_prot
 
+SSMGR_PASSWD=$(openssl rand -base64 12)
 SYSTEMDPREFIX="/etc/systemd/system"
 SUFFIX=.tar.gz
 NG_NAME=nginx
@@ -474,7 +473,7 @@ cat > "${TJ_CONFIGPATH}" << EOF
     "remote_addr": "127.0.0.1",
     "remote_port": 80,
     "password": [
-        "${TJ_PASS}"
+        "${SSMGR_PASSWD}"
     ],
     "ssl": {
         "cert": "${SSLCER}",
@@ -539,11 +538,11 @@ npm i -g pm2
 echo "安装ssmgr-trojan-client..."
 npm i -g ssmgr-trojan-client
 echo "添加pm2开机启动ssmgr-trojan-client..."
-pm2 --name ssmgrtjc -f start ssmgr-trojan-client -x -- -k 节点连接密码 >> /dev/null 2>&1
+pm2 --name ssmgrtjc -f start ssmgr-trojan-client -x -- -k ${SSMGR_PASSWD} >> /dev/null 2>&1
 pm2 save && pm2 startup
 echo "删除 ${TMPDIR}..."
 rm -rf "${TMPDIR}"
-echo "完成..."
+echo "节点域名：${newname} 节点端口：4001 节点密码： ${SSMGR_PASSWD}"
 }
 
 off_log
