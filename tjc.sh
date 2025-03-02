@@ -30,7 +30,7 @@ SSMGR_PASSWD=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c 12)
 SYSTEMDPREFIX="/etc/systemd/system"
 SUFFIX=.tar.gz
 NG_NAME=nginx
-NG_VERSION=$(curl -s 'http://nginx.org/en/download.html' | sed 's/</\'$'\n''</g' | sed -n '/>Stable version$/,$ p' | grep 'tar.gz' | sed 's/.*tar.gz">nginx-//' | head -n 1)
+NG_VERSION=$(curl -fsSL 'http://nginx.org/en/download.html' | sed 's/</\'$'\n''</g' | sed -n '/>Stable version$/,$ p' | grep 'tar.gz' | sed 's/.*tar.gz">nginx-//' | head -n 1)
 NG_TARBALL="${NG_NAME}-${NG_VERSION}${SUFFIX}"
 NG_DOWNLOADURL="https://nginx.org/download/${NG_TARBALL}"
 NG_CONFIG_URL="https://raw.githubusercontent.com/syscca/nginx-trojan/master/nginx.conf"
@@ -44,10 +44,9 @@ PCRE_DOWNLOADURL="https://ftp.exim.org/pub/pcre/${PCRE_TARBALL}"
 # https://ftp.exim.org/pub/pcre/pcre-8.44.tar.gz
 
 ZLIB_NAME=zlib
-ZLIB_VERSION=$(curl -s 'https://zlib.net' | sed 's/</\'$'\n''</g' | sed -n '/Current release:/,$ p' | grep '<B> ' | sed 's/<B> zlib //' | head -n 1)
+ZLIB_VERSION=$(curl -fsSL 'https://zlib.net' | sed 's/</\'$'\n''</g' | sed -n '/Current release:/,$ p' | grep '<B> ' | sed 's/<B> zlib //' | head -n 1)
 ZLIB_TARBALL="${ZLIB_NAME}-${ZLIB_VERSION}${SUFFIX}"
 ZLIB_DOWNLOADURL="http://zlib.net/${ZLIB_TARBALL}"
-# http://zlib.net/zlib-1.2.11.tar.gz
 
 SSL_VERSION=$(curl -fsSL https://api.github.com/repos/openssl/openssl/releases | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/' | head -n 1)
 SSL_TARBALL="${SSL_VERSION}${SUFFIX}"
@@ -75,7 +74,7 @@ echo "安装软件pssh wget socat qrencode curl xz unzip build-essential redis-s
 apt install pssh wget socat qrencode curl xz-utils unzip build-essential redis-server -y
 
 ymname="/etc/nginx/conf.d/${newname}.conf"
-wwip=$(curl -fsSL https://ipv4.jsonip.com | grep -o "[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}")
+wwip=$(curl -fsSL myip.ipip.net | grep -oE '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}')
 
 TMPDIR="$(mktemp -d)"
 
@@ -190,18 +189,8 @@ iptables -A OUTPUT -j ACCEPT
 iptables -A INPUT -p tcp --dport 80 -j ACCEPT
 iptables -A INPUT -p tcp --dport 443 -j ACCEPT
 iptables -A INPUT -p tcp -m state --state NEW --dport ${ssh_prot} -j ACCEPT
-#iptables -A INPUT -p tcp --dport 25 -j ACCEPT
-#iptables -A INPUT -p tcp --dport 465 -j ACCEPT
 iptables -A INPUT -p tcp --dport 4001 -j ACCEPT
 iptables -A INPUT -p udp --dport 4001 -j ACCEPT
-#iptables -A INPUT -p tcp --dport 3306 -j ACCEPT
-#iptables -A INPUT -p tcp --dport 6001 -j ACCEPT
-#iptables -A INPUT -p udp --dport 6001 -j ACCEPT
-#iptables -A INPUT -p tcp --dport 6002 -j ACCEPT
-#iptables -A INPUT -p udp --dport 6002 -j ACCEPT
-#iptables -A INPUT -p udp --dport 51820 -j ACCEPT
-#iptables -A INPUT -p tcp --dport 7000:7500 -j ACCEPT
-#iptables -A INPUT -p udp --dport 7000:7500 -j ACCEPT
 iptables -A INPUT -p icmp -m icmp --icmp-type 8 -j ACCEPT
 iptables -A INPUT -j REJECT
 
