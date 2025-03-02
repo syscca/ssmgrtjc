@@ -25,7 +25,7 @@ echo "输入域名: "
 read newname
 echo "输入防火墙SSH要开放的端口: "
 read ssh_prot
-
+CLEAN_DOMAIN=$(echo "$newname" | awk -F. '{print $(NF-1)"."$NF}')
 SSMGR_PASSWD=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c 12)
 SYSTEMDPREFIX="/etc/systemd/system"
 SUFFIX=.tar.gz
@@ -52,8 +52,8 @@ SSL_VERSION=$(curl -fsSL https://api.github.com/repos/openssl/openssl/releases |
 SSL_TARBALL="${SSL_VERSION}${SUFFIX}"
 SSL_DOWNLOADURL="https://github.com/openssl/openssl/releases/download/${SSL_VERSION}/${SSL_VERSION}${SUFFIX}"
 
-SSLCER="/etc/nginx/ssl/syscca.com/fullchain.cer"
-SSLKEY="/etc/nginx/ssl/syscca.com/syscca.com.key"
+SSLCER="/etc/nginx/ssl/${CLEAN_DOMAIN}/fullchain.cer"
+SSLKEY="/etc/nginx/ssl/${CLEAN_DOMAIN}/syscca.com.key"
 SSLFILE="/etc/nginx/ssl"
 
 TJ_NAME=trojan-go
@@ -399,10 +399,10 @@ Wants=network-online.target
 
 [Service]
 Type=forking
-PIDFile=/var/run/nginx.pid
+PIDFile=/run/nginx.pid
 ExecStart=/usr/sbin/nginx -c /etc/nginx/nginx.conf
-ExecReload=/bin/sh -c "/bin/kill -s HUP \$(/bin/cat /var/run/nginx.pid)"
-ExecStop=/bin/sh -c "/bin/kill -s TERM \$(/bin/cat /var/run/nginx.pid)"
+ExecReload=/bin/sh -c "/bin/kill -s HUP \$(/bin/cat /run/nginx.pid)"
+ExecStop=/bin/sh -c "/bin/kill -s TERM \$(/bin/cat /run/nginx.pid)"
 
 [Install]
 WantedBy=multi-user.target
@@ -410,11 +410,11 @@ EOF
 fi
 
 echo "Downloading fullchain.cer..."
-if [[ -f "/etc/nginx/ssl/syscca.com/syscca.com.key" ]];then
-echo "syscca.com.key 文件已存在..."
+if [[ -f "/etc/nginx/ssl/${CLEAN_DOMAIN}/${CLEAN_DOMAIN}.key" ]];then
+echo "${CLEAN_DOMAIN}.key 文件已存在..."
 else
 echo "下载证书/etc/nginx/ssl/"
-scp -o StrictHostKeyChecking=no -r root@主域名:/etc/nginx/ssl /etc/nginx/
+scp -o StrictHostKeyChecking=no -r root@${CLEAN_DOMAIN}:/etc/nginx/ssl /etc/nginx/
 fi
 
 echo "Reloading systemd daemon..."
