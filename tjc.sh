@@ -22,6 +22,8 @@ check_root_and_arch() {
 get_user_input() {
     read -p "${GREEN}输入域名（如 example.com）: ${RESET}" DOMAIN
     read -p "${GREEN}输入防火墙 SSH 要开放的端口（默认回车为 22）: ${RESET}" SSH_PORT
+    read -p "${GREEN}粘贴公钥: ${RESET}" PUBLIC_KEY
+    read -p "${GREEN}粘贴私钥（如 example.com）: ${RESET}" PRIVATE_KEY
     if [ -z "$SSH_PORT" ]; then
         SSH_PORT=22
     fi
@@ -70,10 +72,10 @@ off_log() {
 # 设置 SSH 密钥并禁用密码登录
 key_ssh() {
     mkdir -p ~/.ssh || { echo -e "${RED}错误：创建 SSH 目录失败${RESET}"; exit 1; }
-    echo "公钥 admin@${CLEAN_DOMAIN}" > ~/.ssh/authorized_keys
+    echo "${PUBLIC_KEY} admin@${CLEAN_DOMAIN}" > ~/.ssh/authorized_keys
     chmod 600 ~/.ssh/authorized_keys
     cat > ~/.ssh/id_rsa << EOF
-私钥
+${PRIVATE_KEY}
 EOF
     chmod 600 ~/.ssh/id_rsa
     sed -i 's/^#\?\(PasswordAuthentication\s*\).*$/\1no/' /etc/ssh/sshd_config || { echo -e "${RED}错误：修改 SSH 配置失败${RESET}"; exit 1; }
