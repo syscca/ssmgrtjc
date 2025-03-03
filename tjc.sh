@@ -25,8 +25,6 @@ get_user_input() {
     read -p "${GREEN}粘贴公钥: ${RESET}" PUBLIC_KEY
     echo -e "${GREEN}粘贴私钥 (以 EOF 结尾):${RESET}"
     PRIVATE_KEY=$(cat << 'EOF'
-    # 请在此粘贴您的私钥
-EOF
 )
     if [ -z "$SSH_PORT" ]; then
         SSH_PORT=22
