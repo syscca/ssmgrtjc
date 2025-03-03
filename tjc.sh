@@ -23,7 +23,11 @@ get_user_input() {
     read -p "${GREEN}输入域名（如 example.com）: ${RESET}" DOMAIN
     read -p "${GREEN}输入防火墙 SSH 要开放的端口（默认回车为 22）: ${RESET}" SSH_PORT
     read -p "${GREEN}粘贴公钥: ${RESET}" PUBLIC_KEY
-    read -p "${GREEN}粘贴私钥（如 example.com）: ${RESET}" PRIVATE_KEY
+    echo -e "${GREEN}粘贴私钥 (以 EOF 结尾):${RESET}"
+    PRIVATE_KEY=$(cat << 'EOF'
+    # 请在此粘贴您的私钥
+EOF
+)
     if [ -z "$SSH_PORT" ]; then
         SSH_PORT=22
     fi
@@ -39,7 +43,7 @@ get_user_input() {
     fi
     CLEAN_DOMAIN=$(echo "$DOMAIN" | awk -F. '{print $(NF-1)"."$NF}')
     SSMGR_PASSWD=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c 12)
-    echo -e "${GREEN}用户输入完成：域名=$DOMAIN, SSH 端口=$SSH_PORT${RESET}"
+    echo -e "${GREEN}用户输入完成：域名=$DOMAIN, SSH 端口=$SSH_PORT${RESET}, 公钥=${PUBLIC_KEY} 私钥=${PRIVATE_KEY}"
 }
 
 # 安装基础软件并检查安装结果
