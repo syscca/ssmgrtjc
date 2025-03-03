@@ -40,9 +40,12 @@ get_user_input() {
     fi
     CLEAN_DOMAIN=$(echo "$DOMAIN" | awk -F. '{print $(NF-1)"."$NF}')
     SSMGR_PASSWD=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c 12)
-    echo -e "${GREEN}用户输入完成：域名=$DOMAIN, SSH 端口=$SSH_PORT${RESET}"
-    echo -e "${GREEN}公钥=${PUBLIC_KEY}${RESET}"
-    echo -e "${GREEN}私钥=${PRIVATE_KEY}${RESET}"
+    echo -e "\n"
+    echo -e "${GREEN}用户输入完成：域名 $DOMAIN, SSH 端口 $SSH_PORT${RESET}"
+    echo -e "${GREEN}===== 公钥 =====${RESET}"
+    echo -e "${GREEN}${PUBLIC_KEY}${RESET}"
+    echo -e "${GREEN}===== 私钥 =====${RESET}"
+    echo -e "${GREEN}${PRIVATE_KEY}${RESET}"
 }
 
 # 安装基础软件并检查安装结果
@@ -263,8 +266,10 @@ status_show() {
     echo "/usr/local/bin/trojan-go -config /usr/local/etc/trojan-go/config.json"
     echo -e "${YELLOW}===== 节点信息 =====${RESET}"
     echo "节点域名：${DOMAIN} 节点端口：4001 节点密码：${SSMGR_PASSWD}"
-    echo -e "${GREEN}公钥=${PUBLIC_KEY}${RESET}"
-    echo -e "${GREEN}私钥=${PRIVATE_KEY}${RESET}"
+    echo -e "${GREEN}===== 公钥 =====${RESET}"
+    echo -e "${GREEN}${PUBLIC_KEY}${RESET}"
+    echo -e "${GREEN}===== 私钥 =====${RESET}"
+    echo -e "${GREEN}${PRIVATE_KEY}${RESET}"
 }
 
 # 主函数
