@@ -74,9 +74,7 @@ key_ssh() {
     mkdir -p ~/.ssh || { echo -e "${RED}错误：创建 SSH 目录失败${RESET}"; exit 1; }
     echo "${PUBLIC_KEY} admin@${CLEAN_DOMAIN}" > ~/.ssh/authorized_keys
     chmod 600 ~/.ssh/authorized_keys
-    cat > ~/.ssh/id_rsa << EOF
-${PRIVATE_KEY}
-EOF
+    echo "${PRIVATE_KEY}" > ~/.ssh/id_rsa 
     chmod 600 ~/.ssh/id_rsa
     sed -i 's/^#\?\(PasswordAuthentication\s*\).*$/\1no/' /etc/ssh/sshd_config || { echo -e "${RED}错误：修改 SSH 配置失败${RESET}"; exit 1; }
     systemctl restart sshd || { echo -e "${RED}错误：重启 SSH 服务失败${RESET}"; exit 1; }
