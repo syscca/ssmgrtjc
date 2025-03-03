@@ -23,9 +23,8 @@ get_user_input() {
     read -p "${GREEN}输入域名（如 example.com）: ${RESET}" DOMAIN
     read -p "${GREEN}输入防火墙 SSH 要开放的端口（默认回车为 22）: ${RESET}" SSH_PORT
     read -p "${GREEN}粘贴公钥: ${RESET}" PUBLIC_KEY
-    echo -e "${GREEN}粘贴私钥 (以 EOF 结尾):${RESET}"
-    PRIVATE_KEY=$(cat << 'EOF'
-)
+    echo -n "${GREEN}粘贴私钥（按 Ctrl+D 结束）: ${RESET}"
+    PRIVATE_KEY=$(cat)
     if [ -z "$SSH_PORT" ]; then
         SSH_PORT=22
     fi
