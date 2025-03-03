@@ -256,8 +256,8 @@ cd ./${NG_NAME}-${NG_VERSION}
 --conf-path=/etc/nginx/nginx.conf \
 --error-log-path=/var/log/nginx/error.log \
 --http-log-path=/var/log/nginx/access.log \
---pid-path=/run/nginx.pid \
---lock-path=/run/nginx.lock \
+--pid-path=/var/run/nginx.pid \
+--lock-path=/var/run/nginx.lock \
 --http-client-body-temp-path=/var/cache/nginx/client_temp \
 --http-proxy-temp-path=/var/cache/nginx/proxy_temp \
 --http-fastcgi-temp-path=/var/cache/nginx/fastcgi_temp \
@@ -399,10 +399,10 @@ Wants=network-online.target
 
 [Service]
 Type=forking
-PIDFile=/run/nginx.pid
+PIDFile=/var/run/nginx.pid
 ExecStart=/usr/sbin/nginx -c /etc/nginx/nginx.conf
-ExecReload=/bin/sh -c "/bin/kill -s HUP \$(/bin/cat /run/nginx.pid)"
-ExecStop=/bin/sh -c "/bin/kill -s TERM \$(/bin/cat /run/nginx.pid)"
+ExecReload=/bin/sh -c "/bin/kill -s HUP \$(/bin/cat /var/run/nginx.pid)"
+ExecStop=/bin/sh -c "/bin/kill -s TERM \$(/bin/cat /var/run/nginx.pid)"
 
 [Install]
 WantedBy=multi-user.target
