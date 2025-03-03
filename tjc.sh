@@ -185,7 +185,7 @@ setup_trojan() {
     if systemctl is-active --quiet trojan-go; then
         systemctl stop trojan-go || { echo -e "${RED}错误：停止 Trojan-Go 失败${RESET}"; exit 1; }
     fi
-    wget -q --no-check-certificate "https://github.com/p4gefau1t/trojan-go/releases/download/v0.5.1/trojan-go-linux-amd64.zip" -O trojan-go.zip || { echo -e "${RED}错误：下载 Trojan-Go 失败${RESET}"; exit 1; }
+    wget -q --show-progress --no-check-certificate "https://github.com/p4gefau1t/trojan-go/releases/download/v0.5.1/trojan-go-linux-amd64.zip" -O trojan-go.zip || { echo -e "${RED}错误：下载 Trojan-Go 失败${RESET}"; exit 1; }
     unzip -o trojan-go.zip -d /usr/local/bin/ && chmod 755 /usr/local/bin/trojan-go || { echo -e "${RED}错误：安装 Trojan-Go 失败${RESET}"; exit 1; }
     mkdir -p /usr/local/etc/trojan-go
     cat > /usr/local/etc/trojan-go/config.json << EOF
