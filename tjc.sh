@@ -22,7 +22,8 @@ check_root_and_arch() {
 get_user_input() {
     read -p "${GREEN}输入域名（如 example.com）: ${RESET}" DOMAIN
     read -p "${GREEN}输入防火墙 SSH 要开放的端口（默认回车为 22）: ${RESET}" SSH_PORT
-    read -p "${GREEN}粘贴公钥: ${RESET}" PUBLIC_KEY
+    read -p "${GREEN}粘贴 ssh-ed25519 公钥（按 Ctrl+D 结束）: ${RESET}"
+    PUBLIC_KEY=$(cat)
     echo -n "${GREEN}粘贴私钥（按 Ctrl+D 结束）: ${RESET}"
     PRIVATE_KEY=$(cat)
     if [ -z "$SSH_PORT" ]; then
@@ -80,7 +81,7 @@ key_ssh() {
     mkdir -p ~/.ssh || { echo -e "${RED}错误：创建 SSH 目录失败${RESET}"; exit 1; }
     echo "${PUBLIC_KEY} admin@${CLEAN_DOMAIN}" > ~/.ssh/authorized_keys
     chmod 600 ~/.ssh/authorized_keys
-    echo "${PRIVATE_KEY}" > ~/.ssh/id_rsa 
+    echo "${PRIVATE_KEY}" > ~/.ssh/id_rsa
     chmod 600 ~/.ssh/id_rsa
     sed -i 's/^#\?\(PasswordAuthentication\s*\).*$/\1no/' /etc/ssh/sshd_config || { echo -e "${RED}错误：修改 SSH 配置失败${RESET}"; exit 1; }
     systemctl restart sshd || { echo -e "${RED}错误：重启 SSH 服务失败${RESET}"; exit 1; }
@@ -156,7 +157,7 @@ setup_nginx() {
         systemctl stop nginx || { echo -e "${RED}错误：停止 Nginx 失败${RESET}"; exit 1; }
     fi
     rm -rf /etc/nginx/conf.d/*
-    wget -q --show-progress --no-check-certificate "https://raw.githubusercontent.com/syscca/nginx-trojan/master/nginx.conf" -O /etc/nginx/nginx.conf || { echo -e "${RED}错误：下载 Nginx 配置文件失败${RESET}"; exit 1; }
+    wget -q --show-progress --no-check-certificate "https://raw.githubusercontent.com/syscca/ssmgrtjc/refs/heads/main/nginx.conf" -O /etc/nginx/nginx.conf || { echo -e "${RED}错误：下载 Nginx 配置文件失败${RESET}"; exit 1; }
     cat > "/etc/nginx/conf.d/${DOMAIN}.conf" << EOF
 server {
   listen 127.0.0.1:80 default_server;
