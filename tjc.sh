@@ -24,6 +24,7 @@ get_user_input() {
     read -p "${GREEN}输入防火墙 SSH 要开放的端口（默认回车为 22）: ${RESET}" SSH_PORT
     read -p "${GREEN}粘贴 ssh-ed25519 公钥（按 Ctrl+D 结束）: ${RESET}" PUBLIC_KEY
     PUBLIC_KEY=$(echo "$PUBLIC_KEY" | sed '/^$/d')  # 去除空行
+    echo -e "\n"
     echo -n "${GREEN}粘贴私钥（按 Ctrl+D 结束）: ${RESET}"
     PRIVATE_KEY=$(cat | sed '/^$/d')  # 去除空行
     # 默认 22 端口
